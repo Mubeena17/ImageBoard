@@ -5,6 +5,7 @@ Vue.createApp({
         return {
             headline: "My Vue App",
             images: [],
+            cardCSS: "cont_cards",
         };
     },
     mounted() {
@@ -18,30 +19,3 @@ Vue.createApp({
             });
     },
 }).mount("#main");
-
-// Vue.createApp({
-//     data() {
-//         return {
-//             headline: "My fancy image board",
-//             headlineCss: "headlineClass",
-//             cities: [],
-//             firstName: "",
-//             count: 0,
-//         };
-//     },
-//     methods: {
-//         updateName: function (e) {
-//             this.firstName = "Sven";
-//         },
-//         increaseCount: function () {
-//             this.count++;
-//         },
-//     },
-//     mounted() {
-//         fetch("/cities")
-//             .then((res) => res.json())
-//             .then((cities) => {
-//                 this.cities = cities;
-//             });
-//     },
-// }).mount("#main");
