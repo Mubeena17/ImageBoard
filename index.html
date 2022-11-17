@@ -5,7 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Image Board</title>
     </head>
-    <body>
+    <body id="main">
+        <ul v-for="image of images">
+                <li><img :src="image.url" /></li>
+        </ul>
         <script
             src="/js/app.js"
             type="module"
