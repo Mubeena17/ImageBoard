@@ -5,7 +5,7 @@ Vue.createApp({
         return {
             headline: "My Vue App",
             images: [],
-            cardCSS: "cont_cards",
+            cardCSS: "data-card",
         };
     },
     mounted() {

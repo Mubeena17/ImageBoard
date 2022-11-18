@@ -3,33 +3,28 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <style>
-                        .cont_cards {
-                    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: 200px;
-    grid-gap: 10px;
-    align-items: center;
-    justify-items: center;
-            }
-            img{
-                height: 200px;
-                width: 200px;
-            }
-            card{
-                display: flex;
-            }
-        </style>
+        <link rel="stylesheet" href="/styles/card.css">
+        
         <title>Image Board</title>
     </head>
     <body id="main">
-        <div class="cont_cards">
-        <div class="card"  v-for="image of images">
+        <h1>I LOVE PIXELS</h1>
+
+        <div class="container_cards">
+                    <div class="data-card" :class="data-cardCSS" v-for="image of images">
+                        <div id="imgContainer" >
+                            <img  :src="image.url" />
+                        </div>
+                        <text>{{image.title}}</text>
+                    </div>
+                    
                 
-                    <img :class="cardCSS" :src="image.url" />
-                    <text>{{image.title}}</text>
-                
-        </div></div>
+
+        </div>
+        
+    </div>
+       
+
         <script
             src="/js/app.js"
             type="module"
