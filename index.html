@@ -9,6 +9,29 @@
     </head>
     <body id="main">
         <h1>I LOVE PIXELS</h1>
+        <h1>Upload Your Files</h1>
+            <form
+                action="/image"
+                method="post"
+                enctype="multipart/form-data"
+                @submit.prevent="onFormSubmit"
+            >
+                <div class="form-row">
+                    <label for="photo">Please select your file</label>
+                    <input type="file" name="photo" id="photo" />
+                </div>
+                <input type="submit" v-on:click="uploadImage" value="Upload!" class="btn-submit" />
+            </form>
+            <div class="status">{{ message }}</div>
+
+            <!-- <div class="images">
+                <img
+                    v-for="image in images"
+                    v-bind:src="image"
+                    alt="an image"
+                    class="image"
+                />
+            </div> -->
 
         <div class="container_cards">
                     <div class="data-card" :class="data-cardCSS" v-for="image of images">
