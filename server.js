@@ -5,6 +5,8 @@ require("dotenv").config();
 const { PORT = 8080 } = process.env;
 const { getImage } = require("./db");
 const { uploader } = require("./middleware");
+const fs = require("fs");
+const { S3 } = require("./s3");
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "uploads")));
@@ -19,10 +21,34 @@ app.get("/images", (req, res) => {
 
 app.post("/image", uploader.single("photo"), (req, res) => {
     console.log("image in server");
+    console.log(req.file);
 
     console.log(req.body.image_title);
     if (req.file) {
         console.log("file is", req.file);
+
+        const { filename, mimetype, size, path } = req.file;
+
+        const promise = S3.putObject({
+            Bucket: "spicedling",
+            ACL: "public-read",
+            Key: filename,
+            Body: fs.createReadStream(path),
+            ContentType: mimetype,
+            ContentLength: size,
+        }).promise();
+
+        promise
+            .then(() => {
+                console.log("success");
+                // it worked!!!
+                res.json({});
+            })
+            .catch((err) => {
+                // uh oh
+                console.log(err);
+            });
+
         res.json({
             success: true,
             message: "File upload successful",
