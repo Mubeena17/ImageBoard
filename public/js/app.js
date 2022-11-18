@@ -25,7 +25,10 @@ Vue.createApp({
                 .then((response) => {
                     return response.json();
                 })
-                .then((result) => (this.message = result.message))
+                .then((result) => {
+                    this.photo = result.file;
+                    this.message = result.message;
+                })
                 .catch((err) => console.log(err));
         },
     },
@@ -35,7 +38,6 @@ Vue.createApp({
                 return res.json();
             })
             .then((images) => {
-                console.log(images);
                 this.images = images;
             });
     },

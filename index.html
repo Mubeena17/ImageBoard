@@ -24,14 +24,14 @@
             </form>
             <div class="status">{{ message }}</div>
 
-            <!-- <div class="images">
+            <div class="images">
                 <img
-                    v-for="image in images"
-                    v-bind:src="image"
+                    
+                    :src="photo"
                     alt="an image"
                     class="image"
                 />
-            </div> -->
+            </div>
 
         <div class="container_cards">
                     <div class="data-card" :class="data-cardCSS" v-for="image of images">
