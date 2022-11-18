@@ -8,6 +8,9 @@ Vue.createApp({
             cardCSS: "data-card",
             message: "",
             photo: "",
+            title: "",
+            description: "",
+            username: "",
         };
     },
     methods: {
@@ -15,9 +18,13 @@ Vue.createApp({
             e.preventDefault();
             console.log("clicked");
             const myFileInput = document.querySelector("input[type='file']");
+
             const photo = myFileInput.files[0];
             const formData = new FormData();
             formData.append("photo", photo);
+            formData.append("image_title", this.title);
+            formData.append("image_descp", this.description);
+            formData.append("username", this.username);
             fetch("/image", {
                 method: "POST",
                 body: formData,
@@ -28,6 +35,8 @@ Vue.createApp({
                 .then((result) => {
                     this.photo = result.file;
                     this.message = result.message;
+                    console.log(result);
+                    this.images.push(result);
                 })
                 .catch((err) => console.log(err));
         },
@@ -38,6 +47,7 @@ Vue.createApp({
                 return res.json();
             })
             .then((images) => {
+                console.log(images);
                 this.images = images;
             });
     },

@@ -19,12 +19,17 @@ app.get("/images", (req, res) => {
 
 app.post("/image", uploader.single("photo"), (req, res) => {
     console.log("image in server");
+
+    console.log(req.body.image_title);
     if (req.file) {
         console.log("file is", req.file);
         res.json({
             success: true,
             message: "File upload successful",
-            file: `/${req.file.filename}`,
+            url: `/${req.file.filename}`,
+            description: req.body.description,
+            title: req.body.titile,
+            username: req.body.username,
         });
     } else {
         res.json({

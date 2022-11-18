@@ -62,6 +62,10 @@ img {
     height: 200px;
     width: 300px;
 }
+
+.form-row {
+    display: flex;
+}
 /* #card {
     display: flex;
 } */
