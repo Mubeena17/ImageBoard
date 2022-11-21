@@ -11,20 +11,20 @@ const modalComponent = {
                             <h3>{{currentImage.title}}</h3>
                         </div>
                         <div class="modal-body">
-                     <div class="data-card">
+                     <div id="modal-img-container" >
                    
-                    <div id="imgContainer">
                         <img  :src="currentImage.url" />
-                    </div>
+                   
                     <text>{{currentImage.title}}</text>
               
             </div>
                     </div>
                     <div class="modal-footer">
                       default footer
-                    <button class="modal-default-button">
-                        OK
-            </button></div></div></div>`,
+                    <button class="modal-default-button" @click="$emit('close')">
+                    OK
+                  </button>
+                  </div></div></div>`,
 
     mounted() {
         console.log(this.imageId);
@@ -48,17 +48,3 @@ const modalComponent = {
 };
 
 export default modalComponent;
-// template: `<div class="modal-wrapper">
-//                 <div class="modal-container">
-//                     <div class="modal-header">
-//                         <h3>custom header</h3>
-//                     </div>
-//                     <div class="modal-body">
-//                   {{currentImage.title}}
-//                 </div>
-//                 <div class="modal-footer">
-//                   default footer
-//                 <button class="modal-default-button">
-//                     OK
-//         </button></div></div></div>`,
-// };

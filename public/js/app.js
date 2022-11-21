@@ -34,7 +34,7 @@ Vue.createApp({
                     this.photo = result.file;
                     this.message = result.message;
 
-                    this.images.push(result);
+                    this.images.unshift(result);
                 })
                 .catch((err) => {
                     this.message = err;

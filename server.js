@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 require("dotenv").config();
 const { PORT = 8080 } = process.env;
-const { getImage, getSelectedImage } = require("./db");
+const { getImage, getSelectedImage, uploadImageDb } = require("./db");
 const { uploader } = require("./middleware");
 const fs = require("fs");
 const { S3 } = require("./s3");
@@ -31,13 +31,17 @@ app.post("/image", uploader.single("photo"), (req, res) => {
             Body: fs.createReadStream(path),
             ContentType: mimetype,
             ContentLength: size,
-        }).promise();
-
-        promise
+        })
+            .promise()
             .then((result) => {
                 console.log("success");
-                console.log("result", result);
+                let url = `https://s3.amazonaws.com/spicedling/${filename}`;
+                console.log(req.body);
+                const { description, title, username } = req.body;
+                return uploadImageDb({ url, description, title, username });
                 // it worked!!!
+            })
+            .then(() => {
                 return res.json({
                     success: true,
                     message: "File upload successful",
@@ -51,7 +55,7 @@ app.post("/image", uploader.single("photo"), (req, res) => {
                 // uh oh
                 return res.json({
                     success: false,
-                    message: "Something went wrong",
+                    message: err.message,
                 });
             });
     } else {

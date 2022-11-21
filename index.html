@@ -29,33 +29,24 @@
             <div class="status">{{ message }}</div>
 
            <!-- add uploading status -->
+
         <div class="container_cards">
             <div class="data-card" v-for="image of images">
                 <div v-on:click="showModal(image.id)">
-                    <div id="imgContainer">
+                    
                         <img  :src="image.url" />
-                    </div>
+                    
                     <text>{{image.title}}</text>
                 </div>
             </div>
         </div>
         <!-- MODAL ELEMENT BEGIN -->
+        <transition name="modal">
         <div v-if="selectImageId" class="modal-mask">
-            <modal-component v-bind:image-id="selectImageId"></modal-component>
-            <!-- <div class="modal-wrapper">
-                <div class="modal-container">
-                    <div class="modal-header">
-                        <h3>custom header</h3>
-                    </div> 
-                    <div class="modal-body">
-                  default body
-                </div> 
-                <div class="modal-footer">
-                  default footer
-                <button class="modal-default-button">
-                    OK
-        </button></div></div></div> -->
+            <modal-component v-bind:image-id="selectImageId" @close="selectImageId = false"></modal-component>
+           
     </div>
+</transition>
         <!-- MODAL ELEMENT ENDS -->
 
 
