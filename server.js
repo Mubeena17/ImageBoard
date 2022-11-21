@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 require("dotenv").config();
 const { PORT = 8080 } = process.env;
-const { getImage } = require("./db");
+const { getImage, getSelectedImage } = require("./db");
 const { uploader } = require("./middleware");
 const fs = require("fs");
 const { S3 } = require("./s3");
@@ -19,14 +19,9 @@ app.get("/images", (req, res) => {
     });
 });
 
+//need to handle MulterError: File too large
 app.post("/image", uploader.single("photo"), (req, res) => {
-    console.log("image in server");
-    console.log(req.file);
-
-    console.log(req.body.image_title);
     if (req.file) {
-        console.log("file is", req.file);
-
         const { filename, mimetype, size, path } = req.file;
 
         const promise = S3.putObject({
@@ -39,34 +34,51 @@ app.post("/image", uploader.single("photo"), (req, res) => {
         }).promise();
 
         promise
-            .then(() => {
+            .then((result) => {
                 console.log("success");
+                console.log("result", result);
                 // it worked!!!
-                res.json({});
+                return res.json({
+                    success: true,
+                    message: "File upload successful",
+                    url: `/${req.file.filename}`,
+                    description: req.body.description,
+                    title: req.body.title,
+                    username: req.body.username,
+                });
             })
             .catch((err) => {
                 // uh oh
-                console.log(err);
+                return res.json({
+                    success: false,
+                    message: "Something went wrong",
+                });
             });
-
-        res.json({
-            success: true,
-            message: "File upload successful",
-            url: `/${req.file.filename}`,
-            description: req.body.description,
-            title: req.body.titile,
-            username: req.body.username,
-        });
     } else {
-        res.json({
+        return res.json({
             success: false,
             message: "File upload failed",
         });
     }
 });
 
+app.post("/modal", (req, res) => {
+    console.log("body ", req.body);
+    if (req.body) {
+        getSelectedImage(req.body.id).then((result) => {
+            return res.send(result);
+        });
+    }
+});
+
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"));
+});
+
+app.use(() => (err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+        return res.status(418).send(err.code);
+    }
 });
 
 app.listen(PORT, () => console.log(`I'm listening on port ${PORT}`));

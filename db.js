@@ -19,3 +19,9 @@ module.exports.addPetitioner = ({ firstName, lastName, email, password }) => {
         )
         .then((result) => result.rows[0]);
 };
+
+module.exports.getSelectedImage = (id) => {
+    return db
+        .query("SELECT * FROM images WHERE id=$1", [id])
+        .then((result) => result.rows[0]);
+};
