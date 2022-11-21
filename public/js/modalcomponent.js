@@ -1,5 +1,13 @@
 const modalComponent = {
     props: ["imageId"],
+    methods: {
+        getnextid: function (e) {
+            // inform the parent component that name got updated
+            // for this we emit an event
+
+            this.$emit("next");
+        },
+    },
     data() {
         return {
             currentImage: {},
@@ -20,7 +28,7 @@ const modalComponent = {
             </div>
                     </div>
                     <div class="modal-footer">
-                      default footer
+                    
                     <button class="modal-default-button" @click="$emit('close')">
                     OK
                   </button>

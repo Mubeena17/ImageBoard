@@ -5,12 +5,15 @@ const db = spicedPg(
     `postgres:${process.env.USER}:${process.env.PASS}@localhost:5432/${process.env.DATABASE}`
 );
 
-module.exports.getImage = () => {
+module.exports.getImage = (offset) => {
     return db
-        .query("SELECT * FROM images ORDER BY created_at DESC")
+        .query(
+            `SELECT * FROM images ORDER BY created_at DESC LIMIT 2 OFFSET $1`,
+            [offset]
+        )
         .then((result) => result.rows);
 };
-//signup
+
 module.exports.uploadImageDb = ({ url, description, title, username }) => {
     return db
         .query(

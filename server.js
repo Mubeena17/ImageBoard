@@ -13,8 +13,9 @@ app.use(express.static(path.join(__dirname, "uploads")));
 
 app.use(express.json());
 
-app.get("/images", (req, res) => {
-    getImage().then((result) => {
+app.post("/images", (req, res) => {
+    console.log("bhbhb", req.body.offset);
+    getImage(req.body.offset).then((result) => {
         return res.send(result);
     });
 });

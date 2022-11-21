@@ -11,9 +11,10 @@ Vue.createApp({
             images: [],
             cardCSS: "data-card",
             message: "",
-
+            offset: 0,
             selectImageId: 0,
             currentImage: {},
+            hasMoreItem: true,
         };
     },
     methods: {
@@ -44,9 +45,36 @@ Vue.createApp({
         showModal: function (imageId) {
             this.selectImageId = imageId;
         },
+        loadMore: function (offset) {
+            this.offset = offset + 2;
+            fetch("/images", {
+                method: "POST",
+                body: JSON.stringify({
+                    offset: this.offset,
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+                .then((res) => {
+                    return res.json();
+                })
+                .then((images) => {
+                    this.hasMoreItem = images.length ? true : false;
+                    this.images.push(...images);
+                });
+        },
     },
     mounted() {
-        fetch("/images")
+        fetch("/images", {
+            method: "POST",
+            body: JSON.stringify({
+                offset: this.offset,
+            }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
             .then((res) => {
                 return res.json();
             })
