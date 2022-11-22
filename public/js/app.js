@@ -34,7 +34,7 @@ Vue.createApp({
                 .then((result) => {
                     this.photo = result.file;
                     this.message = result.message;
-
+                    console.log("ulpoaded :", result);
                     this.images.unshift(result);
                 })
                 .catch((err) => {

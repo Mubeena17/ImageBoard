@@ -7,6 +7,8 @@ const { getImage, getSelectedImage, uploadImageDb } = require("./db");
 const { uploader } = require("./middleware");
 const fs = require("fs");
 const { S3 } = require("./s3");
+const util = require("util");
+const unlinkFile = util.promisify(fs.unlink);
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "uploads")));
@@ -14,7 +16,6 @@ app.use(express.static(path.join(__dirname, "uploads")));
 app.use(express.json());
 
 app.post("/images", (req, res) => {
-    console.log("bhbhb", req.body.offset);
     getImage(req.body.offset).then((result) => {
         return res.send(result);
     });
@@ -39,17 +40,27 @@ app.post("/image", uploader.single("photo"), (req, res) => {
                 let url = `https://s3.amazonaws.com/spicedling/${filename}`;
                 console.log(req.body);
                 const { description, title, username } = req.body;
-                return uploadImageDb({ url, description, title, username });
+                return uploadImageDb({
+                    url,
+                    description,
+                    title,
+                    username,
+                }).then((row) => {
+                    unlinkFile(req.file.path);
+                    return row;
+                });
                 // it worked!!!
             })
-            .then(() => {
+
+            .then((row) => {
                 return res.json({
                     success: true,
                     message: "File upload successful",
-                    url: `/${req.file.filename}`,
+                    url: `https://s3.amazonaws.com/spicedling/${filename}`,
                     description: req.body.description,
                     title: req.body.title,
                     username: req.body.username,
+                    id: row.id,
                 });
             })
             .catch((err) => {
@@ -67,10 +78,11 @@ app.post("/image", uploader.single("photo"), (req, res) => {
     }
 });
 
-app.post("/modal", (req, res) => {
-    console.log("body ", req.body);
-    if (req.body) {
-        getSelectedImage(req.body.id).then((result) => {
+app.get("/modal/:id", (req, res) => {
+    console.log("id", req.params.id);
+    if (req.params.id) {
+        getSelectedImage(req.params.id).then((result) => {
+            console.log(result);
             return res.send(result);
         });
     }

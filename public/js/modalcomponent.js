@@ -35,16 +35,8 @@ const modalComponent = {
                   </div></div></div>`,
 
     mounted() {
-        console.log(this.imageId);
-        fetch("/modal", {
-            method: "POST",
-            body: JSON.stringify({
-                id: this.imageId,
-            }),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
+        console.log("id", this.imageId);
+        fetch(`/modal/${this.imageId}`)
             .then((res) => {
                 return res.json();
             })
