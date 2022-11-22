@@ -47,14 +47,11 @@
         <transition name="modal">
             
         <div v-if="selectImageId" class="modal-mask">
-            <modal-component v-bind:image-id="selectImageId" @close="selectImageId = false" @next="getnextid"></modal-component>
+            <modal v-bind:image-id="selectImageId" @close="selectImageId = false" @next="getnextid"></modal>
            
     </div>
 </transition>
         <!-- MODAL ELEMENT ENDS -->
-
-
-
 
         <script
             src="/js/app.js"

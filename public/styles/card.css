@@ -55,3 +55,8 @@ body {
 /* #card {
     display: flex;
 } */
+
+.close {
+    font-size: 45px;
+    font-weight: 600;
+}

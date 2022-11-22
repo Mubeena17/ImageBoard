@@ -3,7 +3,13 @@ const express = require("express");
 const app = express();
 require("dotenv").config();
 const { PORT = 8080 } = process.env;
-const { getImage, getSelectedImage, uploadImageDb } = require("./db");
+const {
+    getImage,
+    getSelectedImage,
+    uploadImageDb,
+    getImageComment,
+    addImageComment,
+} = require("./db");
 const { uploader } = require("./middleware");
 const fs = require("fs");
 const { S3 } = require("./s3");
@@ -38,7 +44,7 @@ app.post("/image", uploader.single("photo"), (req, res) => {
             .then((result) => {
                 console.log("success");
                 let url = `https://s3.amazonaws.com/spicedling/${filename}`;
-                console.log(req.body);
+
                 const { description, title, username } = req.body;
                 return uploadImageDb({
                     url,
@@ -79,11 +85,35 @@ app.post("/image", uploader.single("photo"), (req, res) => {
 });
 
 app.get("/modal/:id", (req, res) => {
-    console.log("id", req.params.id);
     if (req.params.id) {
         getSelectedImage(req.params.id).then((result) => {
-            console.log(result);
             return res.send(result);
+        });
+    }
+});
+
+app.get("/comment/:id", (req, res) => {
+    if (req.params.id) {
+        getImageComment(req.params.id).then((result) => {
+            console.log("comments are ", result);
+            return res.send(result);
+        });
+    }
+});
+
+app.post("/comment/:id", (req, res) => {
+    if (req.body) {
+        addImageComment({
+            comment: req.body.comment,
+            username: req.body.username,
+            image_id: req.params.id,
+        }).then((result) => {
+            return res.json({
+                comment: result.comment,
+                username: result.username,
+                image_id: result.image_id,
+                id: result.id,
+            });
         });
     }
 });

@@ -1,9 +1,11 @@
 import * as Vue from "./vue.js";
-import modalComponent from "./modalcomponent.js";
+import modal from "./component/modal.js";
+import comment from "./component/comment.js";
 
 Vue.createApp({
     components: {
-        "modal-component": modalComponent,
+        modal: modal,
+        comment: comment,
     },
     data() {
         return {
