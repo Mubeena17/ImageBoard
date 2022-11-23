@@ -17,6 +17,7 @@ Vue.createApp({
             selectImageId: 0,
             currentImage: {},
             hasMoreItem: true,
+            lowestId: null,
         };
     },
     methods: {
@@ -63,6 +64,15 @@ Vue.createApp({
                 })
                 .then((images) => {
                     this.hasMoreItem = images.length ? true : false;
+                    // const ji = images.find((image) => image.id === "1");
+                    // console.log("##########id is one", ji);
+
+                    images.map((photo) => {
+                        this.lowestId = photo.lowestId;
+                        if (photo.id === this.lowestId)
+                            this.hasMoreItem = false;
+                    });
+
                     this.images.push(...images);
                 });
         },
@@ -81,6 +91,7 @@ Vue.createApp({
                 return res.json();
             })
             .then((images) => {
+                console.log("Get lowest id", images);
                 this.images = images;
             });
     },

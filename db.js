@@ -8,7 +8,9 @@ const db = spicedPg(
 module.exports.getImage = (offset) => {
     return db
         .query(
-            `SELECT * FROM images ORDER BY created_at DESC LIMIT 2 OFFSET $1`,
+            `SELECT *,
+            (SELECT id FROM images ORDER BY id ASC LIMIT 1) AS "lowestId" 
+             FROM images ORDER BY created_at DESC LIMIT 2 OFFSET $1`,
             [offset]
         )
         .then((result) => result.rows);
@@ -45,4 +47,37 @@ module.exports.addImageComment = ({ comment, username, image_id }) => {
             [comment, username, image_id]
         )
         .then((result) => result.rows[0]);
+};
+
+module.exports.getMoreImages = (lastId) => {
+    return db
+        .query(
+            `SELECT * FROM images
+    WHERE id < $1
+    ORDER BY id DESC
+    LIMIT 10`
+        )
+        .then(({ rows }) => rows);
+};
+
+module.exports.getMore = (lowestId) => {
+    return db.query(
+        `SELECT *,
+    (SELECT id FROM images ORDER BY id ASC LIMIT 1) AS "lowestId" 
+    FROM images
+    WHERE id < $1
+    ORDER BY id DESC
+    LIMIT 3`,
+        [lowestId]
+    );
+};
+
+module.exports.get1 = () => {
+    return db
+        .query(
+            `SELECT *,
+            (SELECT id FROM images ORDER BY id ASC LIMIT 1) AS "lowestId"
+            FROM images ORDER BY created_at DESC LIMIT 2 OFFSET 0`
+        )
+        .then((result) => result.rows);
 };
