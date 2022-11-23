@@ -8,7 +8,7 @@
         "start": "concurrently \"nodemon server.js\" \"browser-sync start --proxy 'localhost:8000' --files '**/*'\""
     },
     "engines": {
-        "node": "14.20.1"
+        "node": "14.21.1"
     },
     "author": "",
     "license": "ISC",
