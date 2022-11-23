@@ -5,9 +5,13 @@ const modal = {
     components: {
         comment: comment,
     },
+    emits: ["close"],
     methods: {
         getnextid: function (e) {
             this.$emit("next");
+        },
+        close: function () {
+            this.$emit("close");
         },
     },
     data() {
@@ -18,7 +22,7 @@ const modal = {
     },
     template: `<div class="modal-wrapper">
             <div class="modal-container">
-                <button class="modal-default-button" @click="$emit('close')">
+                <button class="modal-default-button" @click="close" >
                             <span class="close">&times;</span>
                 </button>
 

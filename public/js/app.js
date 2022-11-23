@@ -37,7 +37,7 @@ Vue.createApp({
                 .then((result) => {
                     this.photo = result.file;
                     this.message = result.message;
-                    console.log("ulpoaded :", result);
+
                     this.images.unshift(result);
                 })
                 .catch((err) => {
@@ -47,6 +47,12 @@ Vue.createApp({
         },
         showModal: function (imageId) {
             this.selectImageId = imageId;
+            history.pushState(null, "", `/modals/${imageId}`);
+            console.log("show modal", this.selectImageId);
+        },
+        closeModal: function () {
+            this.selectImageId = false;
+            history.pushState(null, "", "/");
         },
         loadMore: function (offset) {
             this.offset = offset + 2;
@@ -64,8 +70,6 @@ Vue.createApp({
                 })
                 .then((images) => {
                     this.hasMoreItem = images.length ? true : false;
-                    // const ji = images.find((image) => image.id === "1");
-                    // console.log("##########id is one", ji);
 
                     images.map((photo) => {
                         this.lowestId = photo.lowestId;
@@ -91,9 +95,33 @@ Vue.createApp({
                 return res.json();
             })
             .then((images) => {
-                console.log("Get lowest id", images);
                 this.images = images;
             });
+
+        console.log("location.pathname ", location.pathname);
+        //-----history -----//
+        if (parseInt(location.pathname.slice(-1))) {
+            // console.log("now : ", location.pathname.slice(-1));
+            this.selectImageId = location.pathname.slice(-1);
+            console.log("parse int", this.selectImageId);
+        } else {
+            history.pushState({}, "", "/");
+        }
+
+        window.addEventListener("popstate", () => {
+            this.selectImageId = location.pathname.slice(1);
+            console.log("selected popstate", this.selectImageId);
+        });
+
+        // if (!isNaN(location.pathname.slice(1))) {
+        //     this.imageSelected = location.pathname.slice(1);
+        //     window.addEventListener("popstate", () => {
+        //         this.imageSelected = location.pathname.slice(1);
+        //     });
+        // } else {
+        //     this.imageSelected = null;
+        //     history.replaceState({}, "", "/");
+        // }
     },
 }).mount("#main");
 

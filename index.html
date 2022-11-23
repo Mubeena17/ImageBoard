@@ -42,14 +42,15 @@
             </div> 
             <div v-if="hasMoreItem" class="data-card">
             <button class="more-button" v-on:click="loadMore(offset)">+</button></div>
-        </div>
+           </div>
         <!-- MODAL ELEMENT BEGIN -->
         <transition name="modal">
             
         <div v-if="selectImageId" class="modal-mask">
-            <modal v-bind:image-id="selectImageId" @close="selectImageId = false" @next="getnextid"></modal>
-           
-    </div>
+            <modal v-bind:image-id="selectImageId" @close="closeModal" @next="getnextid">
+            <div  v-on:click="loadPrevious">prev</div>
+            <div  v-on:click="loadNext">next</div></modal>
+        </div>
 </transition>
         <!-- MODAL ELEMENT ENDS -->
 

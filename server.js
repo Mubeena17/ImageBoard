@@ -85,7 +85,7 @@ app.post("/image", uploader.single("photo"), (req, res) => {
 });
 
 app.get("/modal/:id", (req, res) => {
-    if (req.params.id) {
+    if (+req.params.id) {
         getSelectedImage(req.params.id).then((result) => {
             return res.send(result);
         });
@@ -95,7 +95,6 @@ app.get("/modal/:id", (req, res) => {
 app.get("/comment/:id", (req, res) => {
     if (req.params.id) {
         getImageComment(req.params.id).then((result) => {
-            console.log("comments are ", result);
             return res.send(result);
         });
     }
@@ -122,10 +121,10 @@ app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"));
 });
 
-app.use(() => (err, req, res, next) => {
-    if (err instanceof multer.MulterError) {
-        return res.status(418).send(err.code);
-    }
-});
+// app.use(() => (err, req, res, next) => {
+//     if (err instanceof multer.MulterError) {
+//         return res.status(418).send(err.code);
+//     }
+// });
 
 app.listen(PORT, () => console.log(`I'm listening on port ${PORT}`));
