@@ -2,7 +2,8 @@ const spicedPg = require("spiced-pg");
 require("dotenv").config();
 
 const db = spicedPg(
-    `postgres:${process.env.USER}:${process.env.PASS}@localhost:5432/${process.env.DATABASE}`
+    process.env.DATABASE_URL ||
+        `postgres:${process.env.USER}:${process.env.PASS}@localhost:5432/${process.env.DATABASE}`
 );
 
 module.exports.getImage = (offset) => {
@@ -29,7 +30,12 @@ module.exports.uploadImageDb = ({ url, description, title, username }) => {
 
 module.exports.getSelectedImage = (id) => {
     return db
-        .query("SELECT * FROM images WHERE id=$1", [id])
+        .query(
+            `SELECT *, 
+            (SELECT id FROM images WHERE id < $1 ORDER BY id DESC LIMIT 1) AS "nextid",
+            (SELECT id FROM images WHERE id > $1 ORDER BY id ASC LIMIT 1) AS "previousid" FROM images WHERE id=$1`,
+            [id]
+        )
         .then((result) => result.rows[0]);
 };
 

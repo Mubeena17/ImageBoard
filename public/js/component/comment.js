@@ -30,6 +30,16 @@ const comment = {
                     return;
                 });
         },
+        fetchComments: function () {
+            fetch(`/comment/${this.id}`)
+                .then((res) => {
+                    return res.json();
+                })
+                .then((comments) => {
+                    this.comments = comments;
+                })
+                .catch((err) => console.log(err));
+        },
     },
     data() {
         return {
@@ -53,16 +63,13 @@ const comment = {
             </form>
                
                `,
-
+    watch: {
+        id: function () {
+            this.fetchComments();
+        },
+    },
     mounted() {
-        fetch(`/comment/${this.id}`)
-            .then((res) => {
-                return res.json();
-            })
-            .then((comments) => {
-                this.comments = comments;
-            })
-            .catch((err) => console.log(err));
+        this.fetchComments();
     },
 };
 

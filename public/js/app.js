@@ -23,6 +23,7 @@ Vue.createApp({
     },
     methods: {
         uploadImage: function (e) {
+            e.preventDefault();
             const inputs = document.querySelectorAll(
                 "#title, #description, #username, #photo"
             );
