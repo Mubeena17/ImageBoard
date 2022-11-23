@@ -85,9 +85,10 @@ app.post("/image", uploader.single("photo"), (req, res) => {
 });
 
 app.get("/modal/:id", (req, res) => {
-    if (+req.params.id) {
+    if (req.params.id) {
         getSelectedImage(req.params.id).then((result) => {
-            return res.send(result);
+            if (result) return res.send(result);
+            else return res.status(404).send("Not found");
         });
     }
 });

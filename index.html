@@ -12,19 +12,18 @@
         <h1>I LOVE PIXELS</h1>
         <h1>Upload Your Files</h1>
             <form id="uploadform"
-                action="/image"
                 method="post"
                 enctype="multipart/form-data"
                 @submit.prevent="onFormSubmit"
             >
                 <div class="form-row">
-                    <input type="text" name="title" v-model="title" placeholder="title"/> 
-                    <input type="text" name="description" v-model="description" placeholder="description"/>  
-                    <input type="text" name="username" v-model="username" placeholder="username"/>
+                    <input type="text" required name="title" id="title" v-model="title" placeholder="title"/> 
+                    <input type="text" required name="description" id="description" v-model="description" placeholder="description"/>  
+                    <input type="text" required name="username" id="username" v-model="username" placeholder="username"/>
                     <label for="photo">Please select your file</label>
-                    <input type="file" name="photo" id="photo" />
+                    <input type="file" name="photo" id="photo" required />
                 </div>
-                <input type="submit" v-on:click="uploadImage" value="Upload!" class="btn-submit" />
+                <button type="submit" v-on:click="uploadImage" class="btn-submit">Upload!</button>
             </form>
             <div class="status">{{ message }}</div>
 
@@ -46,8 +45,8 @@
         <!-- MODAL ELEMENT BEGIN -->
         <transition name="modal">
             
-        <div v-if="selectImageId" class="modal-mask">
-            <modal v-bind:image-id="selectImageId" @close="closeModal" @next="getnextid">
+        <div v-if="displayModal" class="modal-mask">
+            <modal @close="closeModal" @next="getnextid">
             <div  v-on:click="loadPrevious">prev</div>
             <div  v-on:click="loadNext">next</div></modal>
         </div>

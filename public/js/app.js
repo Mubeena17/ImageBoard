@@ -18,13 +18,22 @@ Vue.createApp({
             currentImage: {},
             hasMoreItem: true,
             lowestId: null,
+            displayModal: false,
         };
     },
     methods: {
         uploadImage: function (e) {
-            e.preventDefault();
+            const inputs = document.querySelectorAll(
+                "#title, #description, #username, #photo"
+            );
 
             const myform = document.getElementById("uploadform");
+
+            if (!myform.checkValidity()) {
+                this.message = "All fields required";
+                return;
+            }
+
             const formData = new FormData(myform);
 
             fetch("/image", {
@@ -32,7 +41,8 @@ Vue.createApp({
                 body: formData,
             })
                 .then((response) => {
-                    return response.json();
+                    if (response.status === 200) return response.json();
+                    else throw Error("Something went wrong");
                 })
                 .then((result) => {
                     this.photo = result.file;
@@ -40,18 +50,22 @@ Vue.createApp({
 
                     this.images.unshift(result);
                 })
+                .then(() => {
+                    inputs.forEach((input) => {
+                        input.value = "";
+                    });
+                })
                 .catch((err) => {
-                    this.message = err;
+                    this.message = err.message;
                     return;
                 });
         },
         showModal: function (imageId) {
-            this.selectImageId = imageId;
             history.pushState(null, "", `/modals/${imageId}`);
-            console.log("show modal", this.selectImageId);
+            this.displayModal = true;
         },
         closeModal: function () {
-            this.selectImageId = false;
+            this.displayModal = false;
             history.pushState(null, "", "/");
         },
         loadMore: function (offset) {
@@ -80,7 +94,21 @@ Vue.createApp({
                     this.images.push(...images);
                 });
         },
+        renderModal: function () {
+            let url = location.pathname.split("/");
+            if (
+                url.length == 3 &&
+                url[1] == "modals" &&
+                +url[2] &&
+                url[0] == ""
+            ) {
+                this.displayModal = true;
+            } else {
+                this.displayModal = false;
+            }
+        },
     },
+
     mounted() {
         fetch("/images", {
             method: "POST",
@@ -98,30 +126,13 @@ Vue.createApp({
                 this.images = images;
             });
 
-        console.log("location.pathname ", location.pathname);
-        //-----history -----//
-        if (parseInt(location.pathname.slice(-1))) {
-            // console.log("now : ", location.pathname.slice(-1));
-            this.selectImageId = location.pathname.slice(-1);
-            console.log("parse int", this.selectImageId);
-        } else {
-            history.pushState({}, "", "/");
-        }
+        //check for urls
+        this.renderModal();
 
         window.addEventListener("popstate", () => {
-            this.selectImageId = location.pathname.slice(1);
-            console.log("selected popstate", this.selectImageId);
+            // this.selectImageId = location.pathname.slice(1);
+            this.renderModal();
         });
-
-        // if (!isNaN(location.pathname.slice(1))) {
-        //     this.imageSelected = location.pathname.slice(1);
-        //     window.addEventListener("popstate", () => {
-        //         this.imageSelected = location.pathname.slice(1);
-        //     });
-        // } else {
-        //     this.imageSelected = null;
-        //     history.replaceState({}, "", "/");
-        // }
     },
 }).mount("#main");
 

@@ -1,7 +1,6 @@
 import comment from "./comment.js";
 
 const modal = {
-    props: ["imageId"],
     components: {
         comment: comment,
     },
@@ -44,14 +43,19 @@ const modal = {
             </div>    
     </div>`,
 
-    mounted() {
+    beforeMount() {
+        this.imageId = location.pathname.split("/")[2];
         fetch(`/modal/${this.imageId}`)
             .then((res) => {
-                return res.json();
+                if (res.status === 200) return res.json();
+                else throw Error("Something went wrong");
             })
             .then((image) => {
                 this.currentImage = image;
                 this.id = image.id;
+            })
+            .catch(() => {
+                this.$emit("close");
             });
     },
 };
